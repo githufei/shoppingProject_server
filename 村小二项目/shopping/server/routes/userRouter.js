@@ -1,44 +1,84 @@
 let express = require('express');
 let router = express.Router();
 let {User} = require('../database/model');
+let multer=require('multer');//解析文件上传的中间件
 // 个人信息
 router.get('/myInfo',(req,res)=>{
     console.log('个人信息');
     console.log(req.body);
 })
 // 注册
-router.post('/signUp',(req,res)=>{
-            // post 请求 需要用'body-parser'
-            // app.use(bodyParser.urlencoded({extended:true}));
-            // app.use(bodyParser.json());
+ // post 请求 需要用'body-parser'
+// app.use(bodyParser.urlencoded({extended:true}));
+// app.use(bodyParser.json());
+
+let upload=multer({dest:'./userImg'});//上传的头像图片保存到userImg文件夹中
+// 上传文件需要在前端页面的form表单中加enctype="multipart/form-data"属性
+router.post('/signUp',upload.single('avatar'),(req,res)=>{        
     // console.log('注册');
     // console.log(req.body);
-    let {username,password1,password2}=req.body;
-    let password=password1;
-    if(password1===password2){
-        User.create({username,password},(err,doc)=>{
-            if(err){
-                console.log(err);
+    // console.log(req.file);
+    let {username,password,email,avatar}=req.body;
+    avatar=`${req.file.filename}`;
+    User.findOne({username},(err,oldUser)=>{
+        if(err){
+            console.log(err);
+            res.send(JSON.stringify({
+                code:0,
+                msg:'发生错误!'
+            }))
+        }else{
+            if(oldUser){
+                res.send(JSON.stringify({
+                    code:0,
+                    msg:'用户名已存在,请换个用户名注册!'
+                }))
+            }else{
+                User.create({username,password,email,avatar},(err,doc)=>{
+                    if (err) {
+                        res.send(JSON.stringify({
+                            code:0,
+                            msg:'服务器错误,请重试!'
+                        }))
+                    }else{
+                        res.send(JSON.stringify({
+                            code:1,
+                            msg:'恭喜你注册成功!'
+                        }))
+                    }
+                })
             }
-            res.send(JSON.stringify({code:1,msg:'注册成功'}));
-        })
-    }else{
-        res.send(JSON.stringify({code:0,msg:'两次密码必须相同!'}));
-    }
-    
+        }
+    })    
 })
+
+
 // 登录
 router.post('/logIn',(req,res)=>{
-    console.log('登录');
+    // console.log('登录');
     // console.log(req.body);
-    let {username,password}=req.body;
-    User.findOne({username,password},(err,result)=>{
-        if(!result){
-            res.send('用户名和密码匹配成功!')
+    let user=req.body;
+    User.findOne(user,(err,oldUser)=>{
+        if (err) {
+            res.send(JSON.stringify({
+                code:0,
+                msg:"发生错误!"
+            }));
         }else{
-            res.send('用户名或密码不匹配!');
+            if(oldUser){
+                console.log(oldUser);
+                req.session.user=oldUser;
+                res.send(JSON.stringify({
+                    code:0,
+                    msg:"恭喜你登录成功!"
+                }));
+            }else{
+                res.send(JSON.stringify({
+                    code:0,
+                    msg:"用户名或密码不匹配,登录失败!"
+                }));
+            }
         }
-        console.log(result);
     })
 })
 // 注销

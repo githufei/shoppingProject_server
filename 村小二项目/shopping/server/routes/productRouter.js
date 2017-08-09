@@ -45,8 +45,6 @@ router.get('/shoppingCar', (req, res) => {
 // 查询商品详情
 router.get('/productDetail', (req, res) => {
     console.log('商品详情');
-    // let productName=req.query.productName;
-    // let cb=req.query.cb;
     let { _id, cb } = req.query;
     console.log(_id);
     let cbStr = "";
@@ -55,7 +53,6 @@ router.get('/productDetail', (req, res) => {
             console.log(err);
         }
         cbStr = cb + "(" + JSON.stringify(doc) + ")";
-        //    console.log(cbStr);
         res.send(cbStr);
     });
 
@@ -74,5 +71,4 @@ router.get('/getHotList', (req, res) => {
             res.send(cbStr);
         })
 })
-
 module.exports = router;
