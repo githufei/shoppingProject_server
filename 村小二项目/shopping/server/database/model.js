@@ -27,10 +27,11 @@ let ProductSchema = new mongoose.Schema({
     //3.订单
 let OrderSchema = new mongoose.Schema({
     createAt:{type:Date,default:Date.now()},
-    state:String,
+    state:Number,
     purchaser:{type:ObjectId,ref:'User'},
-    productName:{type:ObjectId,ref:'Order'},
+    productName:{type:ObjectId,ref:'Product'},
     count:Number,
+    orderNumber:Number
 });
 //定义用户模型
 let User = conn.model('User',UserSchema);
