@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>shopping</title>
+</head>
+<style>
+    .listItem{
+        height: 100px;
+    }
+    img{
+        width: 80px;
+        height: 80px;
+    }
+</style>
+<body>
+
+    <a href="http://localhost:3333/product/productList?productName=陕北红枣">产品列表</a>
+    <a href="http://localhost:3333/product/shoppingCar">购物车</a>
+    <a href="http://localhost:3333/user/myPage">个人信息</a>
+    <a href="http://localhost:3333/order/orderList">订单列表</a>
+    <button id="button" myid="59894f26d0a62c132cee8280">获取商品信息</button>
+    <button id="button2">获取热销商品信息</button>
+    <ul id="list"></ul>
+    <a href="http://localhost:3333/product/productList?type=%E4%B8%9C%E5%8C%97%E7%89%B9%E4%BA%A7">获取by类型</a>
+    <a href="http://localhost:3333/product/productList">获取类型默认</a>
+   
+</body>
+</html>
+<script src="jquery.min.js"></script>
+<script>
+    let host='localhost';
+    // let host='47.93.47.208'
+    $('#button').click(function(){
+        var id=$(this).attr('myid');
+        $.ajax({
+            url:"http://47.93.47.208:3333/product/productList",
+            method: 'get',
+            dataType:"jsonp",
+            jsonp:"cb",
+            jsonpCallback:"fn",
+            data:null,
+            success:function(res){
+                console.log(res);
+            },
+            error:function(e){
+                console.log("error",e);
+            }
+        })
+    }) 
+
+
+    $('#button2').click(function(){
+        $.ajax({
+            url:`http://${host}:3333/product/getHotList`,
+            method: 'get',
+            dataType:"jsonp",
+            jsonp:"cb",
+            jsonpCallback:"fn",
+            data:null,
+            success:function(res){
+                console.log(res);
+                let str=``;
+                res.forEach((item,index)=>{
+                    str+=`<li class="listItem">
+                        <img src="http://${host}:3333/productImg/${item.productImg}"></img>
+                        <span>${item.productName}</span>
+                    </li>`;
+                })
+                document.getElementById('list').innerHTML=str;
+            },
+            error:function(e){
+                console.log("error",e);
+            }
+        })
+    }) 
+
+
+
+/*    fetch('http://localhost:3333/product/productList?productName=陕北红枣', {
+        method: "GET",
+        mode: "no-cors",
+        headers:{
+            "Content-Type":"appliction/json"
+        }
+    }).then(function(response) {
+        console.log(response);
+        response.text().then((res)=>{
+            console.log(res);
+        }).catch(function(e) {
+        console.log(e);
+    })
+;
+    })
+*/
+
+
+
+</script>
