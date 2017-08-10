@@ -14,9 +14,9 @@ router.get('/myInfo',(req,res)=>{
 
 let upload=multer({dest:'./userImg'});//上传的头像图片保存到userImg文件夹中
 // 上传文件需要在前端页面的form表单中加enctype="multipart/form-data"属性
-router.post('/signUp',upload.single('avatar'),(req,res)=>{        
+router.post('/signUp',upload.single('avatar'),(req,res)=>{  
     // console.log('注册');
-    // console.log(req.body);
+    // console.log('body',req.body);
     // console.log(req.file);
     let {username,password,email,avatar}=req.body;
     avatar=`${req.file.filename}`;
@@ -67,9 +67,10 @@ router.post('/logIn',(req,res)=>{
         }else{
             if(oldUser){
                 console.log(oldUser);
-                req.session.user=oldUser;
+                res.setHeader('Set-Cookie', ['isLogIn=true']);
                 res.send(JSON.stringify({
                     code:0,
+                    userInfo:oldUser,
                     msg:"恭喜你登录成功!"
                 }));
             }else{
@@ -83,6 +84,7 @@ router.post('/logIn',(req,res)=>{
 })
 // 注销
 router.get('/logOut',(req,res)=>{
-    console.log('注销');
+    // console.log('注销');
+    res.setHeader('Set-Cookie', ['isLogIn=fasle']);
 })
 module.exports=router;

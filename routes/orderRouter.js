@@ -16,20 +16,24 @@ Order.find()
     })
 // 提交订单,增加订单
 router.post('/addOrder', (req, res) => {
-    let { purchaser, productName, count } = req.body;//前端提交的数据包括购买人,商品名称,数量等信息
+    let { productName, count ,cb } = req.query;//前端提交的数据包括购买人,商品名称,数量等信息
     let createAt = Date.now();
+    // let cookie = req.headers.cookie;
+    let cookieObj = querystring.parse(cookie, ';');
+    let purchaser = cookieObj.username;//购买人从cookie读取当前登录的用户
+    let cbStr = ``;
     Order.create({ purchaser, productName, count, createAt, state: 0, orderNumber }, (err, doc) => {
         if (err) {
-            res.send(JSON.stringify({
+            res.send(cb + "(" + JSON.stringify({
                 code: 0,
                 msg: "服务器内部错误",
-            }))
+            }) + ")")
         } else {
             orderNumber++;
-            res.send(JSON.stringify({
-                code: 1,
+            res.send(cb + "(" + JSON.stringify({
+                code: 0,
                 msg: "订单提交成功",
-            }))
+            }) + ")")
         }
     })
 })
@@ -61,6 +65,7 @@ router.get('/getOrderList', (req, res) => {
 // 订单详情
 router.get('/orderDetail', (req, res) => {
     let {orderNumber}=req.query;
+    let cbStr=``;
     Order.find({orderNumber},(err,doc)=>{
         if (err) {
             res.send('服务器内部错误!')
