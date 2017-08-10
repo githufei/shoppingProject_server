@@ -15,24 +15,27 @@ Order.find()
         }
     })
 // 提交订单,增加订单
-router.post('/addOrder', (req, res) => {
-    let { productName, count ,cb } = req.query;//前端提交的数据包括购买人,商品名称,数量等信息
+router.get('/addOrder', (req, res) => {
+    console.log('增加订单');
+    let { productName, count ,cb, purchaser } = req.query;//前端提交的数据包括购买人,商品名称,数量等信息
     let createAt = Date.now();
     // let cookie = req.headers.cookie;
-    let cookieObj = querystring.parse(cookie, ';');
-    let purchaser = cookieObj.username;//购买人从cookie读取当前登录的用户
+    // let cookieObj = querystring.parse(cookie, ';');
+    // let purchaser = cookieObj.username;//购买人从cookie读取当前登录的用户
     let cbStr = ``;
+    console.log(purchaser, productName, count, createAt,  orderNumber);
     Order.create({ purchaser, productName, count, createAt, state: 0, orderNumber }, (err, doc) => {
+        console.log('增加订单号',orderNumber);
         if (err) {
             res.send(cb + "(" + JSON.stringify({
                 code: 0,
                 msg: "服务器内部错误",
             }) + ")")
         } else {
-            orderNumber++;
             res.send(cb + "(" + JSON.stringify({
-                code: 0,
+                code: 1,
                 msg: "订单提交成功",
+                orderNumber:orderNumber++
             }) + ")")
         }
     })
@@ -40,6 +43,7 @@ router.post('/addOrder', (req, res) => {
 
 // 订单列表
 router.get('/getOrderList', (req, res) => {
+    console.log('订单列表');
     let { purchaser, cb } = req.query;
     let cbStr = "";
     Order.find({})
@@ -64,7 +68,7 @@ router.get('/getOrderList', (req, res) => {
 
 // 订单详情
 router.get('/orderDetail', (req, res) => {
-    let {orderNumber}=req.query;
+    let {orderNumber, cb}=req.query;
     let cbStr=``;
     Order.find({orderNumber},(err,doc)=>{
         if (err) {
@@ -111,18 +115,17 @@ router.get('/deleteOrder',(req,res)=>{
 
 // 付款
 router.get('/payOrder',(req,res)=>{
+    console.log('付款');
+    let {orderNumber, cb}=req.query;
+    let cbStr='';
+    console.log('付款订单号',orderNumber);        
     Order.update({orderNumber},{state:1},(err,doc)=>{
         if (err) {
-            res.send(JSON.stringify({
-               code:0,
-               msg:'付款失败,服务器内部错误!'
-           }))
+            cbStr = cb + "(" + JSON.stringify({ code:0, msg:'付款失败!' }) + ")";
         }else{
-           res.send(JSON.stringify({
-               code:1,
-               msg:'付款成功!'
-           }))
+            cbStr = cb + "(" + JSON.stringify({ code:1, msg:'付款成功!' }) + ")";
         }
+        res.send(cbStr);
     })
 })
 

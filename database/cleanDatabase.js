@@ -1,5 +1,5 @@
 let {Order,User}=require('./model');
-// 情况订单列表
+// 清空订单列表
 Order.remove({},function(err,result){
     if(err){
         console.log(err);
