@@ -87,7 +87,7 @@ router.get('/orderDetail2', (req, res) => {
                 let result = [];
                 doc.forEach((item, index) => {
                     var { productName, count, createAt, orderNumber, state } = item;
-                    var { productName, productImg , } = productName;
+                    var { productName, productImg } = productName;
                     var data = { productName, productImg, count, createAt, orderNumber, state };
                     result.push(data);
                 })
