@@ -47,7 +47,7 @@ router.get('/getOrderList', (req, res) => {
     let { purchaser, cb, ordertype } = req.query;//ordertype表示的是要获取订单的状态种类,已完成0,未付款1,全部
     console.log('购买人:',purchaser, '订单类型:', ordertype);
 	let cbStr = "";
-    let according={puchaser};
+    let according={purchaser};
     if (ordertype==0||ordertype==1){
         according={state:ordertype,purchaser}
     }
