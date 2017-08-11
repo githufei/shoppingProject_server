@@ -57,8 +57,8 @@ router.get('/getOrderList', (req, res) => {
             console.log(doc);
             doc&&doc.forEach((item, index) => {
                 var { productName, count, createAt, orderNumber, state } = item;
-                var { productName, productImg, describe } = productName;
-                var data = { productName, productImg, describe, count, createAt, orderNumber, state };
+                var { productName, productImg, describe, price } = productName;
+                var data = { productName, productImg, describe, price, count, createAt, orderNumber, state };
                 result.push(data);
             })
             console.log(result);
