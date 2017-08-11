@@ -44,9 +44,13 @@ router.get('/addOrder', (req, res) => {
 // 订单列表
 router.get('/getOrderList', (req, res) => {
     console.log('订单列表');
-    let { purchaser, cb } = req.query;
+    let { purchaser, cb, ordertype } = req.query;//ordertype表示的是要获取订单的状态种类,已完成0,未付款1,全部100
     let cbStr = "";
-    Order.find({})
+    let according={};
+    if (ordertype==0||ordertype==1){
+        according={state:ordertype}
+    }
+    Order.find(according)
         .populate('productName')
         .populate('purchaser')
         .sort({ createAt: -1 })
