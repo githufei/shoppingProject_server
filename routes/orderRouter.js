@@ -66,35 +66,82 @@ router.get('/getOrderList', (req, res) => {
         })
 })
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+router.get('/getOrderList2', (req, res) => {
+    console.log('订单列表');
+    let { purchaser } = req.query;
+    Order.find({})
+        .populate('productName')
+        .populate('purchaser')
+        .sort({ createAt: -1 })
+        .limit(8)
+        .exec((err, doc) => {
+            let result = [];
+            // let createAt=createAt.toLocalString();
+            doc.forEach((item, index) => {
+                var { productName, count, createAt, orderNumber, state } = item;
+                var { productName, productImg } = productName;
+                var data = { productName, productImg, count, createAt, orderNumber, state };
+                result.push(data);
+            })
+            console.log(result);
+            res.send(JSON.stringify(result));
+        })
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // 订单详情
 router.get('/orderDetail', (req, res) => {
-    let {orderNumber, cb}=req.query;
+    console.log('订单详情');
+    let {orderNumber,cb}=req.query;
+    console.log(orderNumber);
     let cbStr=``;
-    Order.find({orderNumber},(err,doc)=>{
-        if (err) {
-            res.send('服务器内部错误!')
-        }else{
-             Order.find({})
-            .populate('productName')
-            .populate('purchaser')
-            .sort({ createAt: -1 })
-            .limit(8)
-            .exec((err, doc) => {
+    Order.find({orderNumber})
+        .populate('productName')
+        .populate('purchaser')
+        .exec((err, doc) => {
+            if(err){
+               cbStr = cb + "(" + JSON.stringify({code:0,msg:'发生错误!'}) + ")";
+            }else{
                 let result = [];
-                // let createAt=createAt.toLocalString();
                 doc.forEach((item, index) => {
                     var { productName, count, createAt, orderNumber, state } = item;
                     var { productName, productImg , } = productName;
                     var data = { productName, productImg, count, createAt, orderNumber, state };
                     result.push(data);
                 })
-                console.log(result);
                 cbStr = cb + "(" + JSON.stringify(result) + ")";
-                res.send(cbStr);
+                console.log(result);
+            }
+            res.send(cbStr);
             })
-        }
-    })
-})
+    }
+)
 
 
 // 删除订单
