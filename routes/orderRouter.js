@@ -57,8 +57,8 @@ router.get('/getOrderList', (req, res) => {
             console.log(doc);
             doc&&doc.forEach((item, index) => {
                 var { productName, count, createAt, orderNumber, state } = item;
-                var { productName, productImg } = productName;
-                var data = { productName, productImg, count, createAt, orderNumber, state };
+                var { productName, productImg, describe } = productName;
+                var data = { productName, productImg, describe, count, createAt, orderNumber, state };
                 result.push(data);
             })
             console.log(result);
@@ -68,10 +68,10 @@ router.get('/getOrderList', (req, res) => {
 })
 
 // 订单详情
-router.get('/orderDetail', (req, res) => {
+router.get('/orderDetail2', (req, res) => {
     console.log('订单详情');
     let {orderNumber,cb}=req.query;
-    console.log(orderNumber);
+    console.log('orderNumber',orderNumber);
     let cbStr=``;
     Order.find({orderNumber})
         .populate('productName')
@@ -94,6 +94,19 @@ router.get('/orderDetail', (req, res) => {
             })
     }
 )
+// 临时测试 订单详情
+router.get('/orderDetail', (req, res) => {
+    console.log('订单详情');
+    let {orderNumber}=req.query;
+    console.log('orderNumber',orderNumber);
+    Order.find({orderNumber},(err,doc)=>{
+        if (err) {
+            res.send(JSON.stringify({code:0,msg:'发生错误'}));
+        }
+        console.log(doc);
+        res.send(JSON.stringify(doc));
+    })       
+})
 
 
 // 删除订单
