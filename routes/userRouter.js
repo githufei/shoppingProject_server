@@ -46,7 +46,7 @@ router.post('/logIn',(req,res)=>{
     console.log('body',req.body);
     let user=req.body;
     if(!user.username||!user.password ){
-        res.end('参数错误');
+        res.send('参数错误');
         return;
     };//判断是不是空对象
     User.findOne(user,(err,oldUser)=>{
@@ -58,7 +58,6 @@ router.post('/logIn',(req,res)=>{
         }else{
             if(oldUser){
                 // res.setHeader('Set-Cookie', ['islogin=true']);
-                res.setHeader('Set-Cookie', ['name=zfpx', 'age=8']);
                 res.send(JSON.stringify({
                     code:1,
                     userInfo:oldUser,
