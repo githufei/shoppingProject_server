@@ -8,7 +8,7 @@ router.get("/productList", (req, res) => {
     type = decodeURI(type);
     let cbStr = "";
     let findByType = (type) => Product.find({ type })
-        .limit(6)
+        .limit(18)
         .exec((err, doc) => {
             console.log(doc);
             cbStr = cb + "(" + JSON.stringify(doc) + ")";
@@ -30,7 +30,7 @@ router.get("/productList", (req, res) => {
         default:
             Product.find()
                 .sort({ sales: -1 })
-                .limit(6)
+                .limit(18)
                 .exec((err, doc) => {
                     cbStr = cb + "(" + JSON.stringify(doc) + ")";
                     res.send(cbStr);
@@ -64,7 +64,7 @@ router.get('/getHotList', (req, res) => {
     let cbStr = "";
     Product.find()
         .sort({ sales: -1 })
-        .limit(12)
+        .limit(24)
         .exec((err, doc) => {
             // console.log(doc);
             cbStr = cb + "(" + JSON.stringify(doc) + ")";
