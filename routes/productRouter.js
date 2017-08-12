@@ -64,7 +64,7 @@ router.get('/getHotList', (req, res) => {
     let cbStr = "";
     Product.find()
         .sort({ sales: -1 })
-        .limit(24)
+        .limit(20)
         .exec((err, doc) => {
             // console.log(doc);
             cbStr = cb + "(" + JSON.stringify(doc) + ")";
